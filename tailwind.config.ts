@@ -9,9 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // ── Design Token Colors ─────────────────────────────────────
+
       colors: {
-        // Canvas
+    
         canvas: {
           base:    "#020617", // slate-950 — page background
           card:    "#0f172a", // slate-900 — cards/sections
@@ -19,7 +19,7 @@ const config: Config = {
           hover:   "#162032", // card hover state
           muted:   "#0d1829", // deeper muted sections
         },
-        // Primary accent — Emerald
+    
         primary: {
           DEFAULT: "#10b981", // emerald-500
           dim:     "#059669", // emerald-600
@@ -27,14 +27,14 @@ const config: Config = {
           muted:   "#064e3b", // emerald-900 — bg for pills
           text:    "#6ee7b7", // emerald-300 — text on dark
         },
-        // Text hierarchy
+     
         ink: {
           DEFAULT: "#f1f5f9", // slate-100 — primary text
           muted:   "#94a3b8", // slate-400 — secondary text
           faint:   "#475569", // slate-600 — placeholder text
           inverse: "#020617", // text on light bg
         },
-        // Status colours
+
         status: {
           success: "#10b981",
           warning: "#f59e0b",
@@ -42,7 +42,7 @@ const config: Config = {
           info:    "#3b82f6",
           pending: "#8b5cf6",
         },
-        // Keep shadcn CSS variable references
+
         background:    "hsl(var(--background))",
         foreground:    "hsl(var(--foreground))",
         card:          { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
@@ -56,7 +56,6 @@ const config: Config = {
         ring:          "hsl(var(--ring))",
       },
 
-      // ── Typography ──────────────────────────────────────────────
       fontFamily: {
         heading: ["var(--font-jakarta)", "system-ui", "sans-serif"],
         body:    ["var(--font-inter)", "system-ui", "sans-serif"],
@@ -66,14 +65,13 @@ const config: Config = {
         "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
       },
 
-      // ── Spacing ─────────────────────────────────────────────────
+
       spacing: {
         "sidebar-w":      "260px",
         "sidebar-w-mini": "72px",
         "topnav-h":       "64px",
       },
 
-      // ── Border radius ────────────────────────────────────────────
       borderRadius: {
         DEFAULT: "var(--radius)",
         lg:   "var(--radius)",
@@ -83,7 +81,7 @@ const config: Config = {
         bento:"24px",
       },
 
-      // ── Shadows ──────────────────────────────────────────────────
+
       boxShadow: {
         "card":       "0 1px 3px 0 rgb(0 0 0 / 0.5), 0 0 0 1px #1e293b",
         "card-hover": "0 4px 24px 0 rgb(16 185 129 / 0.08), 0 0 0 1px #1e293b",
@@ -95,7 +93,6 @@ const config: Config = {
         "inner-glow": "inset 0 1px 0 0 rgb(255 255 255 / 0.04)",
       },
 
-      // ── Animations ────────────────────────────────────────────────
       keyframes: {
         "fade-in": {
           from: { opacity: "0" },
@@ -146,12 +143,12 @@ const config: Config = {
         "accordion-up":  "accordion-up 0.2s ease-out",
       },
 
-      // ── Backdrop blur ──────────────────────────────────────────
+   
       backdropBlur: {
         xs: "2px",
       },
 
-      // ── Background image ──────────────────────────────────────
+  
       backgroundImage: {
         "gradient-radial":    "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
