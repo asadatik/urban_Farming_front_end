@@ -21,7 +21,7 @@ export function ProductCardSkeleton() {
       className="overflow-hidden rounded-[24px]"
       style={{ border: "1px solid rgba(30,41,59,0.8)", background: "linear-gradient(145deg,#0f172a,#0c1525)" }}
     >
-      <Pulse className="h-[200px] w-full" style={{ borderRadius: 0 } as any} />
+      <Pulse className="h-[200px] w-full"  />
       <div className="p-4 space-y-3">
         <div className="flex justify-between gap-4">
           <Pulse className="h-4 w-3/5" />

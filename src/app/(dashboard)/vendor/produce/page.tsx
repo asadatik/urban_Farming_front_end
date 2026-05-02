@@ -6,7 +6,7 @@ import { BentoCard } from "@/components/shared/BentoCard";
 import { Plus, X, Pencil, Trash2, ShieldCheck, AlertCircle, Search } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import type { Produce } from "@/types";
+import type { Produce, ProduceCategory } from "@/types";
 
 const MOCK: Produce[] = [
   { id:"p1", vendorId:"v1", name:"Heirloom Cherry Tomatoes", price:6.99, category:"VEGETABLES", certificationStatus:"APPROVED", availableQuantity:120, isActive:true, description:"Vine-ripened cherry tomatoes." },
@@ -16,9 +16,9 @@ const MOCK: Produce[] = [
 ];
 
 const CERT_STYLES: Record<string,string> = { APPROVED:"pill-success", PENDING:"pill-pending", REJECTED:"pill-error" };
-const CATEGORIES = ["VEGETABLES","FRUITS","HERBS","SEEDS","TOOLS","OTHER"];
+const CATEGORIES: ProduceCategory[] = ["VEGETABLES","FRUITS","HERBS","SEEDS","TOOLS","OTHER"];
 
-interface FormState { name:string; price:string; category:string; availableQuantity:string; description:string; imageUrl:string; }
+interface FormState { name:string; price:string; category:ProduceCategory; availableQuantity:string; description:string; imageUrl:string; }
 const EMPTY: FormState = { name:"", price:"", category:"VEGETABLES", availableQuantity:"", description:"", imageUrl:"" };
 
 export default function VendorProducePage() {
@@ -41,10 +41,22 @@ export default function VendorProducePage() {
   const handleSave = () => {
     if (!form.name || !form.price) { toast.error("Name and price are required."); return; }
     if (editing) {
-      setItems(prev => prev.map(p => p.id === editing.id ? { ...p, ...form, price: parseFloat(form.price), availableQuantity: parseInt(form.availableQuantity) } : p));
+      setItems(prev => prev.map<Produce>(p => (
+        p.id === editing.id
+          ? {
+              ...p,
+              name: form.name,
+              description: form.description,
+              imageUrl: form.imageUrl,
+              category: form.category,
+              price: Number.parseFloat(form.price),
+              availableQuantity: Number.parseInt(form.availableQuantity, 10) || 0,
+            }
+          : p
+      )));
       toast.success("Listing updated.");
     } else {
-      const newItem: Produce = { id: `p${Date.now()}`, vendorId:"v1", ...form, price: parseFloat(form.price), availableQuantity: parseInt(form.availableQuantity)||0, certificationStatus:"PENDING", isActive:true };
+      const newItem: Produce = { id: `p${Date.now()}`, vendorId:"v1", ...form, price: Number.parseFloat(form.price), availableQuantity: Number.parseInt(form.availableQuantity, 10)||0, certificationStatus:"PENDING", isActive:true };
       setItems(prev => [newItem, ...prev]);
       toast.success("Listing created. Awaiting certification.");
     }
@@ -146,7 +158,7 @@ export default function VendorProducePage() {
                 ))}
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-slate-400">Category</label>
-                  <select value={form.category} onChange={e => setForm(prev => ({ ...prev, category: e.target.value }))}
+                  <select value={form.category} onChange={e => setForm(prev => ({ ...prev, category: e.target.value as ProduceCategory }))}
                     className="w-full rounded-xl border border-slate-800 bg-slate-900/50 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-emerald-500/40"
                   >
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
