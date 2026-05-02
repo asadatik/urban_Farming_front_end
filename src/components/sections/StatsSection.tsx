@@ -15,68 +15,104 @@ function CountUp({ target, suffix }: { target: number; suffix: string }) {
     const timer = setInterval(() => {
       start += step;
       if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(Math.floor(start));
+      else setCount(target < 10 ? parseFloat(start.toFixed(1)) : Math.floor(start));
     }, 1000 / 60);
     return () => clearInterval(timer);
   }, [inView, target]);
 
   return (
-    <span ref={ref} style={{ fontFamily: "var(--font-mono)", fontSize: "clamp(72px,8vw,96px)", fontWeight: 500, color: "#fff", letterSpacing: -3 }}>
+    <span ref={ref} className="font-mono text-[clamp(64px,8vw,96px)] font-medium leading-none tracking-[-0.04em] text-white">
       {count}{suffix}
     </span>
   );
 }
 
 const STATS = [
-  { target: 98, suffix: "%", label: "Decision Accuracy", sub: "↑ 4% vs last year" },
-  { target: 4.8, suffix: "★", label: "Customer Rating", sub: "Based on 12K reviews" },
-  { target: 300, suffix: "+", label: "Daily Active Farmers", sub: "↑ 23% growth" },
+  { target: 98,  suffix: "%", label: "Decision Accuracy", trend: "↑ 4% vs last year" },
+  { target: 4.8, suffix: "★", label: "Customer Rating",   trend: "Based on 12K reviews" },
+  { target: 300, suffix: "+", label: "Daily Active Farms", trend: "↑ 23% this month" },
 ];
 
 const PHOTOS = [
-  { src: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500&q=75", caption: "Urban Gardens" },
-  { src: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=500&q=75", caption: "Fresh Produce" },
-  { src: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=500&q=75", caption: "Community Farms" },
+  { src: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=700&q=85", caption: "Urban Gardens" },
+  { src: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=700&q=85", caption: "Fresh Produce" },
+  { src: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=700&q=85", caption: "Community Farms" },
 ];
 
 export default function StatsSection() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+  const lineRef = useRef(null);
+  const inView = useInView(lineRef, { once: true });
 
   return (
-    <section style={{ background: "#000", padding: "120px 80px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-      <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-        <div ref={ref} style={{ height: 1, marginBottom: 80, background: "rgba(255,255,255,0.06)", position: "relative", overflow: "hidden" }}>
+    <section className="border-t border-white/[0.06] bg-black section-pad">
+      <div className="mx-auto max-w-[1240px]">
+
+        {/* Animated scan line */}
+        <div ref={lineRef} className="relative mb-20 h-px overflow-hidden bg-white/[0.05]">
           <motion.div
-            animate={inView ? { width: "100%" } : { width: "0%" }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            style={{ position: "absolute", top: 0, left: 0, height: "100%", background: "linear-gradient(to right,transparent,#22c55e,transparent)" }}
+            animate={inView ? { width: "100%", opacity: 1 } : { width: "0%", opacity: 0 }}
+            transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-emerald-500 to-transparent"
           />
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 0 }}>
-          {STATS.map(({ target, suffix, label, sub }, i) => (
-            <div key={i} style={{ flex: 1, textAlign: "center", borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.08)" : "none", padding: "0 40px" }}>
+        {/* Stats */}
+        <div className="grid grid-cols-1 divide-y divide-white/[0.06] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {STATS.map(({ target, suffix, label, trend }, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center gap-3 px-10 py-8 text-center sm:py-0"
+            >
+              {/* Number */}
               <CountUp target={target} suffix={suffix} />
-              <p style={{ fontFamily: "var(--font-dm)", fontSize: 14, color: "var(--text-3)", marginTop: 12 }}>{label}</p>
-              <p style={{ fontFamily: "var(--font-dm)", fontSize: 12, color: "rgba(34,197,94,0.7)", marginTop: 4 }}>{sub}</p>
-            </div>
+
+              {/* Divider */}
+              <div className="h-px w-10 bg-emerald-500/30" />
+
+              {/* Label */}
+              <p className="text-[13px] tracking-wide text-zinc-600">{label}</p>
+
+              {/* Trend badge */}
+              <span className="rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-3 py-1 text-[11px] font-medium text-emerald-400">
+                {trend}
+              </span>
+            </motion.div>
           ))}
         </div>
 
-        <div style={{ display: "flex", gap: 12, marginTop: 72 }}>
+        {/* Photo grid */}
+        <div className="mt-20 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {PHOTOS.map(({ src, caption }, i) => (
-            <div key={i} style={{ flex: 1, height: 180, borderRadius: 16, overflow: "hidden", position: "relative", cursor: "pointer", transition: "transform 0.4s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="group relative h-[200px] cursor-pointer overflow-hidden rounded-[20px]"
             >
-              <Image src={src} alt={caption} fill className="object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).src = `https://placehold.co/500x180/000/22c55e?text=${caption}`; }}
+              <Image
+                src={src}
+                alt={caption}
+                fill
+                className="object-cover opacity-75 transition-all duration-700 group-hover:scale-[1.05] group-hover:opacity-90"
+                onError={(e) => { (e.target as HTMLImageElement).src = `https://placehold.co/500x200/000/10b981?text=${caption}`; }}
               />
-              <div style={{ position: "absolute", bottom: 12, left: 12, background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 100, padding: "4px 12px" }}>
-                <span style={{ fontFamily: "var(--font-dm)", fontSize: 11, color: "var(--text-2)" }}>{caption}</span>
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+              {/* Caption pill */}
+              <div className="absolute bottom-4 left-4 rounded-full border border-white/[0.12] bg-black/50 px-3.5 py-1.5 backdrop-blur-md transition-all duration-300 group-hover:border-emerald-500/30">
+                <span className="text-[11px] font-medium text-zinc-300">{caption}</span>
               </div>
-            </div>
+
+              {/* Top-right corner glow on hover */}
+              <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-emerald-500/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            </motion.div>
           ))}
         </div>
       </div>
